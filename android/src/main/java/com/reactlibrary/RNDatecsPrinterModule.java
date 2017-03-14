@@ -1,6 +1,8 @@
 
 package com.reactlibrary;
 
+import android.util.Log;
+
 import com.facebook.react.bridge.ReactApplicationContext;
 import com.facebook.react.bridge.ReactContextBaseJavaModule;
 import com.facebook.react.bridge.ReactMethod;
@@ -10,6 +12,7 @@ import com.datecs.api.printer.Printer;
 
 public class RNDatecsPrinterModule extends ReactContextBaseJavaModule {
 
+  private Printer printer;
   private final ReactApplicationContext reactContext;
 
   public RNDatecsPrinterModule(ReactApplicationContext reactContext) {
@@ -24,7 +27,7 @@ public class RNDatecsPrinterModule extends ReactContextBaseJavaModule {
 
   @ReactMethod
   public void printTaggedText(){
-  	Log.d(REACT_CLASS, "start printing Printer");
+  	printer.printTaggedText('{reset}{center}texto');
   }
 
 }
