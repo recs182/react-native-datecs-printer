@@ -1,10 +1,8 @@
-
 package com.renancsoares.datecsprinter;
 
-import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 import java.util.ArrayList;
+import java.util.Collections;
 
 import com.facebook.react.ReactPackage;
 import com.facebook.react.bridge.NativeModule;

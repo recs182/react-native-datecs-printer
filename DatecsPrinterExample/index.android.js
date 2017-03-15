@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { AppRegistry, StyleSheet, Text, View } from 'react-native';
+import { AppRegistry, StyleSheet, Text, View, Button } from 'react-native';
 import DatecsPrinter from 'react-native-datecs-printer';
 
 export default class DatecsPrinterExample extends Component {
@@ -9,15 +9,15 @@ export default class DatecsPrinterExample extends Component {
 	}
 
 	componentDidMount(){
-		DatecsPrinter.show();
+		// DatecsPrinter.initConnection();
 	}
 
 	render() {
 		return (
 			<View style={styles.container}>
-				<Text style={styles.welcome}>
-					fon
-				</Text>
+				
+				<Button title="Ligar" onPress={() => DatecsPrinter.printSelfTest()} />
+
 			</View>
 		);
 	}
@@ -26,19 +26,10 @@ export default class DatecsPrinterExample extends Component {
 const styles = StyleSheet.create({
 	container: {
 		flex: 1,
+		flexDirection: 'column',
 		justifyContent: 'center',
 		alignItems: 'center',
 		backgroundColor: '#F5FCFF',
-	},
-	welcome: {
-		fontSize: 20,
-		textAlign: 'center',
-		margin: 10,
-	},
-	instructions: {
-		textAlign: 'center',
-		color: '#333333',
-		marginBottom: 5,
 	},
 });
 
