@@ -40,7 +40,6 @@ public class RNDatecsPrinterModule extends ReactContextBaseJavaModule {
 		printTaggedText(text, "ISO-8859-1");
 	}
 
-	@ReactMethod
 	/**
 	* Print text expecting markup formatting tags and a defined charset
 	*
