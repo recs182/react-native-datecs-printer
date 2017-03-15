@@ -1,10 +1,6 @@
 
 import { NativeModules } from 'react-native';
 
-const { RNDatecsPrinter } = NativeModules;
+const RNDatecsPrinter = NativeModules.RNDatecsPrinter;
 
-export default {
-	printTaggedText: function(){
-		RNDatecsPrinter.printTaggedText(),
-	}
-};
+export default RNDatecsPrinter;
