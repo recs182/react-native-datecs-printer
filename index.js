@@ -1,6 +1,6 @@
 
 import { NativeModules } from 'react-native';
 
-const RNDatecsPrinter = NativeModules.RNDatecsPrinter;
+const DatecsPrinter = NativeModules.DatecsPrinter;
 
-module.exports = RNDatecsPrinter;
+module.exports = DatecsPrinter;

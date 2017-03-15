@@ -1,5 +1,5 @@
 
-package com.reactlibrary;
+package com.renancsoares.datecsprinter;
 
 import java.util.Arrays;
 import java.util.Collections;
@@ -13,6 +13,7 @@ import com.facebook.react.uimanager.ViewManager;
 import com.facebook.react.bridge.JavaScriptModule;
 
 public class RNDatecsPrinterPackage implements ReactPackage {
+	static final String TAG = "DatecsPrinter";
 	
 	@Override
 	public List<NativeModule> createNativeModules(ReactApplicationContext reactContext) {
