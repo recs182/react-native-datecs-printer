@@ -22,6 +22,6 @@ public class RNDatecsPrinterModule extends ReactContextBaseJavaModule {
 
 	@ReactMethod
 	public void show(){
-		Toast.makeText("");
+		Toast.makeText(getReactApplicationContext(), "TEST", Toast.LENGTH_SHORT).show();
 	}
 }
