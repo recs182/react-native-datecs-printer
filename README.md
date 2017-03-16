@@ -1,6 +1,8 @@
-# THIS IS A WORK IN PROGRESS, DO NOT USE
-
 # react-native-datecs-printer
+
+It's only working on Android and have few methods already.
+As I made this project with a very short deadline, it's specific for the app that I was working on.
+My plan is to make a full port of cordova-plugin-datecs-printer for React Native, so there's breaking changes ahead.
 
 ## Getting started
 
@@ -15,7 +17,7 @@
 #### Android
 
 1. Open up `android/app/src/main/java/[...]/MainActivity.java`
-  - Add `import com.reactlibrary.RNDatecsPrinterPackage;` to the imports at the top of the file
+  - Add `import com.renancsoares.datecsprinter.RNDatecsPrinterPackage;` to the imports at the top of the file
   - Add `new RNDatecsPrinterPackage()` to the list returned by the `getPackages()` method
 2. Append the following lines to `android/settings.gradle`:
   	```
@@ -27,12 +29,17 @@
       compile project(':react-native-datecs-printer')
   	```
 
+### You can see the usage in the example application.
 
-## Usage
-```javascript
-import DatecsPrinter from 'react-native-datecs-printer';
-
-// TODO: What to do with the module?
-RNDatecsPrinter;
-```
-  
+### Tags definition
+- `{reset}`	    Reset to default settings.
+- `{br}`	    Line break. Equivalent of new line.
+- `{b}, {/b}`	Set or clear bold font style.
+- `{u}, {/u}`	Set or clear underline font style.
+- `{i}, {/i}`	Set or clear italic font style.
+- `{s}, {/s}`	Set or clear small font style.
+- `{h}, {/h}`	Set or clear high font style.
+- `{w}, {/w}`	Set or clear wide font style.
+- `{left}`	    Aligns text to the left paper edge.
+- `{center}`	Aligns text to the center of paper.
+- `{right}`	    Aligns text to the right paper edge.
