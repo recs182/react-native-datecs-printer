@@ -6,6 +6,34 @@ export default class DatecsPrinterExample extends Component {
 
 	constructor(props) {
 		super(props);
+
+		this.connect = this.connect.bind(this);
+		this.print = this.print.bind(this);
+		this.disconnect = this.disconnect.bind(this);
+	}
+
+	connect(){
+		DatecsPrinter.connect()
+		.then((res) => {
+			console.log(res);
+		})
+		.catch((err) => {
+			console.log(err)
+		})
+	}
+
+	print(text){
+		DatecsPrinter.printText(text);
+	}
+
+	disconnect(){
+		DatecsPrinter.disconnect()
+		.then((res) => {
+			console.log(res);
+		})
+		.catch((err) => {
+			console.log(err)
+		})
 	}
 
 	componentDidMount(){
@@ -14,7 +42,13 @@ export default class DatecsPrinterExample extends Component {
 	render() {
 		return (
 			<View style={styles.container}>
+				<Button title="Connect" onPress={() => this.connect()} />
 
+
+				<Button title="Print" onPress={() => this.print('{reset}{center}teste')} />
+
+
+				<Button title="Disconnect" onPress={() => this.disconnect()} />
 			</View>
 		);
 	}
