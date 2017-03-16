@@ -9,14 +9,11 @@ export default class DatecsPrinterExample extends Component {
 	}
 
 	componentDidMount(){
-		// DatecsPrinter.initConnection();
 	}
 
 	render() {
 		return (
 			<View style={styles.container}>
-				
-				<Button title="Ligar" onPress={() => DatecsPrinter.printSelfTest()} />
 
 			</View>
 		);
