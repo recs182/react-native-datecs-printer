@@ -38,6 +38,11 @@ public class RNDatecsPrinterModule extends ReactContextBaseJavaModule implements
 	private int readBufferPosition;
 	volatile boolean stopWorker;
 
+	//Promises
+	Promise feedPaperPromise;
+	Promise printTaggedTextPromise;
+	Promise printSelfTestPromise;
+
 	//Members
 	private Printer mPrinter;
     private ProtocolAdapter mProtocolAdapter;
@@ -118,7 +123,6 @@ public class RNDatecsPrinterModule extends ReactContextBaseJavaModule implements
 
 	@ReactMethod
 	public void connect(Promise promise) throws IOException {
-
 	    try {
 			Set<BluetoothDevice> pairedDevices = mBluetoothAdapter.getBondedDevices();
 		    ArrayList list = new ArrayList();
@@ -153,11 +157,11 @@ public class RNDatecsPrinterModule extends ReactContextBaseJavaModule implements
 	    }
 	}
 
-	protected void initializePrinter(InputStream inputStream, OutputStream outputStream, final Promise promise) throws IOException {
+	protected void initializePrinter(InputStream inputStream, OutputStream outputStream, Promise promise) throws IOException {
         mProtocolAdapter = new ProtocolAdapter(inputStream, outputStream);
         if (mProtocolAdapter.isProtocolEnabled()) {
             final ProtocolAdapter.Channel channel = mProtocolAdapter.getChannel(ProtocolAdapter.CHANNEL_PRINTER);
-            channel.setListener(mChannelListener);
+            // channel.setListener(mChannelListener);
             // Create new event pulling thread
             new Thread(new Runnable() {
                 @Override
@@ -172,7 +176,7 @@ public class RNDatecsPrinterModule extends ReactContextBaseJavaModule implements
                         try {
                             channel.pullEvent();
                         } catch (IOException e) {
-                            promise.reject("ERRO: " + e.getMessage());
+                            e.printStackTrace();
                             break;
                         }
                     }
@@ -193,12 +197,19 @@ public class RNDatecsPrinterModule extends ReactContextBaseJavaModule implements
 	@ReactMethod
     public void feedPaper(int linesQuantity) {
         if (linesQuantity < 0 || linesQuantity > 255) {
+			if(feedPaperPromise != null) feedPaperPromise.reject("AMOUNT_LINES_0_255");
+			feedPaperPromise = null;
+			return;
         }
         try {
             mPrinter.feedPaper(linesQuantity);
             mPrinter.flush();
+
+			if(feedPaperPromise != null) feedPaperPromise.resolve("PAPER_FED");
+			feedPaperPromise = null;
         } catch (Exception e) {
-			e.printStackTrace();
+			if(feedPaperPromise != null) feedPaperPromise.reject("Erro: " + e.getMessage());
+			feedPaperPromise = null;
         }
     }
 
@@ -207,7 +218,12 @@ public class RNDatecsPrinterModule extends ReactContextBaseJavaModule implements
         try {
             mPrinter.printSelfTest();
             mPrinter.flush();
+
+			if(printSelfTestPromise != null) printSelfTestPromise.resolve("SELF_TEST_PRINTED");
+			printSelfTestPromise = null;
         } catch (Exception e) {
+			if(printSelfTestPromise != null) printSelfTestPromise.reject("Erro: " + e.getMessage());
+			printSelfTestPromise = null;
         }
     }
 
@@ -217,31 +233,39 @@ public class RNDatecsPrinterModule extends ReactContextBaseJavaModule implements
     }
 
 	@ReactMethod
+	public void printTaggedText(String text, String charset) {
+		int lines = 4;
+		try {
+			mPrinter.printTaggedText(text, charset);
+			mPrinter.flush();
+			feedPaper(lines);
+
+			if(printTaggedTextPromise != null) printTaggedTextPromise.resolve("PRINTED");
+			printTaggedTextPromise = null;
+		} catch (Exception e) {
+			if(printTaggedTextPromise != null) printTaggedTextPromise.reject("Erro: " + e.getMessage());
+			printTaggedTextPromise = null;
+		}
+	}
+
+	@ReactMethod
 	public void disconnect(Promise promise){
 		try {
+			mmSocket.close();
+
 			if (mPrinter != null) {
 	            mPrinter.release();
 	        }
 
-	        if (mProtocolAdapter != null) {
-	            mProtocolAdapter.release();
-	        }
+			if (mProtocolAdapter != null) {
+            	mProtocolAdapter.release();
+        	}
 
 			if(promise != null) promise.resolve("DISCONNECTED");
 		} catch (Exception e) {
 			if(promise != null) promise.reject("ERRO: " + e.getMessage());
 		}
 	}
-
-	private void printTaggedText(String text, String charset) {
-        try {
-            mPrinter.printTaggedText(text, charset);
-            mPrinter.flush();
-			feedPaper(4);
-        } catch (Exception e) {
-			e.printStackTrace();
-        }
-    }
 
 	private void showToast(final String text) {
         Toast.makeText(getReactApplicationContext(), text, Toast.LENGTH_SHORT).show();

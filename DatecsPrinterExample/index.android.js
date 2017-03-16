@@ -42,13 +42,18 @@ export default class DatecsPrinterExample extends Component {
 	render() {
 		return (
 			<View style={styles.container}>
-				<Button title="Connect" onPress={() => this.connect()} />
 
+				<View style={{marginBottom: 15}}>
+					<Button title="Connect" onPress={() => this.connect()} />
+				</View>
 
-				<Button title="Print" onPress={() => this.print('{reset}{center}teste')} />
+				<View style={{marginBottom: 15}}>
+					<Button title="Print" onPress={() => this.print('{reset}{center}teste')} />
+				</View>
 
-
-				<Button title="Disconnect" onPress={() => this.disconnect()} />
+				<View style={{marginBottom: 15}}>
+					<Button title="Disconnect" onPress={() => this.disconnect()} />
+				</View>
 			</View>
 		);
 	}
@@ -59,7 +64,8 @@ const styles = StyleSheet.create({
 		flex: 1,
 		flexDirection: 'column',
 		justifyContent: 'center',
-		alignItems: 'center',
+		alignItems: 'stretch',
+		padding: 15,
 		backgroundColor: '#F5FCFF',
 	},
 });
