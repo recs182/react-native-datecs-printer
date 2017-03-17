@@ -1,6 +1,6 @@
 # react-native-datecs-printer
 
-It's only **works on Android** and have only few specific methods.
+It only **works on Android** and have only few specific methods.
 
 As I made this project with a very short deadline, it's specific for the app that I was working on.
 My plan is to make a full port of cordova-plugin-datecs-printer for React Native, so there's breaking changes coming.
