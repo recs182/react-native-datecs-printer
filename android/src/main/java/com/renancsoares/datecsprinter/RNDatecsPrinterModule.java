@@ -40,12 +40,11 @@ public class RNDatecsPrinterModule extends ReactContextBaseJavaModule implements
 
 	//Promises
 	Promise feedPaperPromise;
-	Promise printTaggedTextPromise;
 	Promise printSelfTestPromise;
 
 	//Members
 	private Printer mPrinter;
-    private ProtocolAdapter mProtocolAdapter;
+	private ProtocolAdapter mProtocolAdapter;
 	private BluetoothAdapter mBluetoothAdapter;
 	private BluetoothSocket mmSocket;
 	private BluetoothDevice mmDevice;
@@ -55,43 +54,43 @@ public class RNDatecsPrinterModule extends ReactContextBaseJavaModule implements
 
 	private final ProtocolAdapter.ChannelListener mChannelListener = new ProtocolAdapter.ChannelListener(){
 		@Override
-        public void onReadEncryptedCard() {
+		public void onReadEncryptedCard() {
             // TODO: onReadEncryptedCard
-        }
+		}
 
-        @Override
-        public void onReadCard() {
+		@Override
+		public void onReadCard() {
             // TODO: onReadCard
-        }
+		}
 
-        @Override
-        public void onReadBarcode() {
+		@Override
+		public void onReadBarcode() {
             // TODO: onReadBarcode
-        }
+		}
 
-        @Override
-        public void onPaperReady(boolean state) {
-            if (state) {
-                showToast("Papel Ok");
-            } else {
-                disconnect(null);
-                showToast("Sem Papel");
-            }
-        }
+		@Override
+		public void onPaperReady(boolean state) {
+			if (state) {
+				showToast("Papel Ok");
+			} else {
+				disconnect(null);
+				showToast("Sem Papel");
+			}
+		}
 
-        @Override
-        public void onOverHeated(boolean state) {
-            if (state) {
-              showToast("Superaquecimento");
-            }
-        }
+		@Override
+		public void onOverHeated(boolean state) {
+			if (state) {
+				showToast("Superaquecimento");
+			}
+		}
 		// 6ca1a08e05c9439bbb6c2825ae7fdec4
-        @Override
-        public void onLowBattery(boolean state) {
-            if (state) {
-              showToast("Pouca Bateria");
-            }
-        }
+		@Override
+		public void onLowBattery(boolean state) {
+			if (state) {
+				showToast("Pouca Bateria");
+			}
+		}
 	};
 
 	public RNDatecsPrinterModule(ReactApplicationContext reactContext) {
@@ -108,12 +107,12 @@ public class RNDatecsPrinterModule extends ReactContextBaseJavaModule implements
 
 	@Override
 	public void onHostPause() {
-	    disconnect(null);
+		disconnect(null);
 	}
 
 	@Override
 	public void onHostDestroy() {
-	    disconnect(null);
+		disconnect(null);
 	}
 
 	@Override
@@ -123,12 +122,12 @@ public class RNDatecsPrinterModule extends ReactContextBaseJavaModule implements
 
 	@ReactMethod
 	public void connect(Promise promise) throws IOException {
-	    try {
+		try {
 			Set<BluetoothDevice> pairedDevices = mBluetoothAdapter.getBondedDevices();
-		    ArrayList list = new ArrayList();
-		    for(BluetoothDevice device : pairedDevices){
+			ArrayList list = new ArrayList();
+			for(BluetoothDevice device : pairedDevices){
 				list.add(device);
-		    }
+			}
 
 			if(list.size() > 0){
 				mmDevice = (BluetoothDevice) list.get(0);
@@ -138,11 +137,11 @@ public class RNDatecsPrinterModule extends ReactContextBaseJavaModule implements
 			}
 
 			// Standard SerialPortService ID
-	        UUID uuid = UUID.fromString("00001101-0000-1000-8000-00805f9b34fb");
-	        mmSocket = mmDevice.createRfcommSocketToServiceRecord(uuid);
-	        mmSocket.connect();
-	        mmOutputStream = mmSocket.getOutputStream();
-	        mmInputStream = mmSocket.getInputStream();
+			UUID uuid = UUID.fromString("00001101-0000-1000-8000-00805f9b34fb");
+			mmSocket = mmDevice.createRfcommSocketToServiceRecord(uuid);
+			mmSocket.connect();
+			mmOutputStream = mmSocket.getOutputStream();
+			mmInputStream = mmSocket.getInputStream();
 
 			try{
 				initializePrinter(mmInputStream, mmOutputStream, promise);
@@ -152,42 +151,52 @@ public class RNDatecsPrinterModule extends ReactContextBaseJavaModule implements
 			}
 
 			// promise.resolve("BLUETOOTH CONNECTED");
-	    }catch(Exception e){
-	        promise.reject("ERRO: " + e.getMessage());
-	    }
+		}catch(Exception e){
+			promise.reject("ERRO: " + e.getMessage());
+		}
 	}
 
 	protected void initializePrinter(InputStream inputStream, OutputStream outputStream, Promise promise) throws IOException {
-        mProtocolAdapter = new ProtocolAdapter(inputStream, outputStream);
-        if (mProtocolAdapter.isProtocolEnabled()) {
-            final ProtocolAdapter.Channel channel = mProtocolAdapter.getChannel(ProtocolAdapter.CHANNEL_PRINTER);
+		mProtocolAdapter = new ProtocolAdapter(inputStream, outputStream);
+		if (mProtocolAdapter.isProtocolEnabled()) {
+			final ProtocolAdapter.Channel channel = mProtocolAdapter.getChannel(ProtocolAdapter.CHANNEL_PRINTER);
             // channel.setListener(mChannelListener);
             // Create new event pulling thread
-            new Thread(new Runnable() {
-                @Override
-                public void run() {
-                    while (true) {
-                        try {
-                            Thread.sleep(50);
-                        } catch (InterruptedException e) {
-                            e.printStackTrace();
-                        }
+			new Thread(new Runnable() {
+				@Override
+				public void run() {
+					while (true) {
+						try {
+							Thread.sleep(50);
+						} catch (InterruptedException e) {
+							e.printStackTrace();
+						}
 
-                        try {
-                            channel.pullEvent();
-                        } catch (IOException e) {
-                            e.printStackTrace();
-                            break;
-                        }
-                    }
-                }
-            }).start();
-            mPrinter = new Printer(channel.getInputStream(), channel.getOutputStream());
-        } else {
-            mPrinter = new Printer(mProtocolAdapter.getRawInputStream(), mProtocolAdapter.getRawOutputStream());
-        }
-        promise.resolve("PRINTER_INITIALIZED");
-    }
+						try {
+							channel.pullEvent();
+						} catch (IOException e) {
+							e.printStackTrace();
+							break;
+						}
+					}
+				}
+			}).start();
+			mPrinter = new Printer(channel.getInputStream(), channel.getOutputStream());
+		} else {
+			mPrinter = new Printer(mProtocolAdapter.getRawInputStream(), mProtocolAdapter.getRawOutputStream());
+		}
+		promise.resolve("PRINTER_INITIALIZED");
+	}
+
+	@ReactMethod
+	public void getStatus(Promise promise) {
+		try {
+			int status = mPrinter.getStatus();
+			promise.resolve(status);
+		} catch (Exception e) {
+			promise.reject("Erro ao buscar status: " + e.getMessage());
+		}
+	}
 
 	/**
      * Alimenta papel à impressora (rola papel em branco)
@@ -195,56 +204,48 @@ public class RNDatecsPrinterModule extends ReactContextBaseJavaModule implements
      * @param linesQuantity
      */
 	@ReactMethod
-    public void feedPaper(int linesQuantity) {
-        if (linesQuantity < 0 || linesQuantity > 255) {
+	public void feedPaper(int linesQuantity) {
+		if (linesQuantity < 0 || linesQuantity > 255) {
 			if(feedPaperPromise != null) feedPaperPromise.reject("AMOUNT_LINES_0_255");
 			feedPaperPromise = null;
 			return;
-        }
-        try {
-            mPrinter.feedPaper(linesQuantity);
-            mPrinter.flush();
+		}
+		try {
+			mPrinter.feedPaper(linesQuantity);
+			mPrinter.flush();
 
 			if(feedPaperPromise != null) feedPaperPromise.resolve("PAPER_FED");
 			feedPaperPromise = null;
-        } catch (Exception e) {
+		} catch (Exception e) {
 			if(feedPaperPromise != null) feedPaperPromise.reject("Erro: " + e.getMessage());
 			feedPaperPromise = null;
-        }
-    }
+		}
+	}
 
 	@ReactMethod
 	public void printSelfTest() {
-        try {
-            mPrinter.printSelfTest();
-            mPrinter.flush();
+		try {
+			mPrinter.printSelfTest();
+			mPrinter.flush();
 
 			if(printSelfTestPromise != null) printSelfTestPromise.resolve("SELF_TEST_PRINTED");
 			printSelfTestPromise = null;
-        } catch (Exception e) {
+		} catch (Exception e) {
 			if(printSelfTestPromise != null) printSelfTestPromise.reject("Erro: " + e.getMessage());
 			printSelfTestPromise = null;
-        }
-    }
+		}
+	}
 
 	@ReactMethod
-	public void printText(String text) {
-        printTaggedText(text, "ISO-8859-1");
-    }
-
-	@ReactMethod
-	public void printTaggedText(String text, String charset) {
-		int lines = 4;
+	public void printText(String text, Promise promise) {
+		String charset = "ISO-8859-1";
 		try {
 			mPrinter.printTaggedText(text, charset);
 			mPrinter.flush();
-			feedPaper(lines);
 
-			if(printTaggedTextPromise != null) printTaggedTextPromise.resolve("PRINTED");
-			printTaggedTextPromise = null;
+			if(promise != null) promise.resolve("PRINTED");
 		} catch (Exception e) {
-			if(printTaggedTextPromise != null) printTaggedTextPromise.reject("Erro: " + e.getMessage());
-			printTaggedTextPromise = null;
+			if(promise != null) promise.reject("Erro: " + e.getMessage());
 		}
 	}
 
@@ -254,12 +255,12 @@ public class RNDatecsPrinterModule extends ReactContextBaseJavaModule implements
 			mmSocket.close();
 
 			if (mPrinter != null) {
-	            mPrinter.release();
-	        }
+				mPrinter.release();
+			}
 
 			if (mProtocolAdapter != null) {
-            	mProtocolAdapter.release();
-        	}
+				mProtocolAdapter.release();
+			}
 
 			if(promise != null) promise.resolve("DISCONNECTED");
 		} catch (Exception e) {
@@ -268,7 +269,7 @@ public class RNDatecsPrinterModule extends ReactContextBaseJavaModule implements
 	}
 
 	private void showToast(final String text) {
-        Toast.makeText(getReactApplicationContext(), text, Toast.LENGTH_SHORT).show();
+		Toast.makeText(getReactApplicationContext(), text, Toast.LENGTH_SHORT).show();
 	}
 
 }
