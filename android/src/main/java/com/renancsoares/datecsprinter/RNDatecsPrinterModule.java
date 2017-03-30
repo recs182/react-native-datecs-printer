@@ -120,6 +120,11 @@ public class RNDatecsPrinterModule extends ReactContextBaseJavaModule implements
 		return "DatecsPrinter";
 	}
 
+	/**
+     * Get paired device and start connection
+     *
+     * @param promise
+     */
 	@ReactMethod
 	public void connect(Promise promise) throws IOException {
 		try {
@@ -156,11 +161,19 @@ public class RNDatecsPrinterModule extends ReactContextBaseJavaModule implements
 		}
 	}
 
+	/**
+     * Connect printer
+     *
+     * @param promise
+     */
 	protected void initializePrinter(InputStream inputStream, OutputStream outputStream, Promise promise) throws IOException {
 		mProtocolAdapter = new ProtocolAdapter(inputStream, outputStream);
 		if (mProtocolAdapter.isProtocolEnabled()) {
 			final ProtocolAdapter.Channel channel = mProtocolAdapter.getChannel(ProtocolAdapter.CHANNEL_PRINTER);
+			
+			// it was causing errors, need to be reviewed
             // channel.setListener(mChannelListener);
+
             // Create new event pulling thread
 			new Thread(new Runnable() {
 				@Override
@@ -188,6 +201,11 @@ public class RNDatecsPrinterModule extends ReactContextBaseJavaModule implements
 		promise.resolve("PRINTER_INITIALIZED");
 	}
 
+	/**
+     * Get Printer status
+     *
+     * @param promise
+     */
 	@ReactMethod
 	public void getStatus(Promise promise) {
 		try {
@@ -199,7 +217,7 @@ public class RNDatecsPrinterModule extends ReactContextBaseJavaModule implements
 	}
 
 	/**
-     * Alimenta papel à impressora (rola papel em branco)
+     * Feed paper to the printer (roll out blank paper)
      *
      * @param linesQuantity
      */
@@ -222,6 +240,9 @@ public class RNDatecsPrinterModule extends ReactContextBaseJavaModule implements
 		}
 	}
 
+	/**
+     * Print self test
+     */
 	@ReactMethod
 	public void printSelfTest() {
 		try {
@@ -236,6 +257,12 @@ public class RNDatecsPrinterModule extends ReactContextBaseJavaModule implements
 		}
 	}
 
+	/**
+     * Print custom text
+     *
+     * @param text
+     * @param promise
+     */
 	@ReactMethod
 	public void printText(String text, Promise promise) {
 		String charset = "ISO-8859-1";
@@ -249,6 +276,11 @@ public class RNDatecsPrinterModule extends ReactContextBaseJavaModule implements
 		}
 	}
 
+	/**
+     * Disconnect printer
+     *
+     * @param promise
+     */
 	@ReactMethod
 	public void disconnect(Promise promise){
 		try {
