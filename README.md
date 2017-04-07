@@ -3,7 +3,7 @@
 It only **works on Android** and have only few specific methods.
 
 As I made this project with a very short deadline, it's specific for the app that I was working on.
-My plan is to make a full port of cordova-plugin-datecs-printer for React Native, so there's breaking changes coming.
+My plan is to make a full port of cordova-plugin-datecs-printer for React Native.
 
 ### Printer used for tests
 DPP 250
@@ -33,7 +33,65 @@ DPP 250
       compile project(':react-native-datecs-printer')
   	```
 
-### You can see the usage in the example application.
+### Examples of methods in your application.
+**It's also provided in the application example**
+```
+connect(){
+	DatecsPrinter.connect()
+	.then( res => {
+		// return CONNECTED
+		console.log(res);
+	})
+	.catch( err => {
+		console.log(err)
+	})
+}
+
+print(text){
+	DatecsPrinter.printText(text)
+	.then( res => {
+		// return PRINTED
+		console.log(res);
+	})
+	.catch( err => {
+		console.log(err);
+	})
+}
+
+printSelfTest(){
+	DatecsPrinter.printSelfTest()
+	.then( res => {
+		// return SELF_TEST_PRINTED
+		console.log(res)
+	})
+	.catch( err => {
+		console.log(err);
+	});
+}
+
+getStatus(){
+	DatecsPrinter.getStatus()
+	.then( res => {
+		// If everything is OK, it'll return 0
+		// you can use this before printing to make sure that nothing wrong happens
+		console.log(res);
+	})
+	.catch( err => {
+		console.log(err)
+	})
+}
+
+disconnect(){
+	DatecsPrinter.disconnect()
+	.then( res => {
+		// return DISCONNECTED
+		console.log(res);
+	})
+	.catch( err => {
+		console.log(err);
+	})
+}
+```
 
 ### Tags definition
 - `{reset}`	    Reset to default settings.
@@ -47,3 +105,13 @@ DPP 250
 - `{left}`	    Aligns text to the left paper edge.
 - `{center}`	Aligns text to the center of paper.
 - `{right}`	    Aligns text to the right paper edge.
+
+### What's coming
+- [ ] Method to get and return all paired devices
+- [ ] Connect method will require pass a device to make the connection
+- [ ] Translations and dynamic messages using String values
+
+### TDB
+* Get unpaired devices method
+* Pair/Unpair device methods
+* Connect/Disconnect Bluetooth methods
