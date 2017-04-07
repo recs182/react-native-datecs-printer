@@ -33,15 +33,6 @@ public class RNDatecsPrinterModule extends ReactContextBaseJavaModule implements
 	private static final Boolean DEBUG = true;
 	private static final String LOG_TAG = "RNDatecsPrinterModule";
 
-	private String address;
-	private byte[] readBuffer;
-	private int readBufferPosition;
-	volatile boolean stopWorker;
-
-	//Promises
-	Promise feedPaperPromise;
-	Promise printSelfTestPromise;
-
 	//Members
 	private Printer mPrinter;
 	private ProtocolAdapter mProtocolAdapter;
@@ -50,7 +41,6 @@ public class RNDatecsPrinterModule extends ReactContextBaseJavaModule implements
 	private BluetoothDevice mmDevice;
 	private OutputStream mmOutputStream;
 	private InputStream mmInputStream;
-	private Thread workerThread;
 
 	private final ProtocolAdapter.ChannelListener mChannelListener = new ProtocolAdapter.ChannelListener(){
 		@Override
@@ -121,8 +111,40 @@ public class RNDatecsPrinterModule extends ReactContextBaseJavaModule implements
 	}
 
 	/**
-     * Get paired device and start connection
+	 * Get list of paired devices
+	 *
+	 * @param promise
+	 */
+	@ReactMethod
+	public void getPairedDevices(Promise promise){
+		Set<BluetoothDevice> pairedDevices = mBluetoothAdapter.getBondedDevices();
+		// it might need to be an react.bridge.WritableArray
+		ArrayList list = new ArrayList();
+		for(BluetoothDevice device : pairedDevices){
+			list.add(device);
+		}
+
+		if(list.size() > 0){
+			promise.resolve(list);
+		}else{
+			promise.reject("Nenhum dispositivo pareado.");
+		}
+	}
+
+	/**
+	 * Get list of unpaired devices
+	 *
+	 * @param promise
+	 */
+	@ReactMethod
+	public void getUnpairedDevices(Promise promise){
+
+	}
+
+	/**
+     * Start bluetooth and print connection
      *
+     * @param device
      * @param promise
      */
 	@ReactMethod
@@ -134,10 +156,11 @@ public class RNDatecsPrinterModule extends ReactContextBaseJavaModule implements
 				list.add(device);
 			}
 
+			//need to return list of paired devices
 			if(list.size() > 0){
 				mmDevice = (BluetoothDevice) list.get(0);
 			}else{
-				showToast("Nenhum dispositivo pareado");
+				showToast("Nenhum dispositivo pareado.");
 				return;
 			}
 
@@ -151,13 +174,13 @@ public class RNDatecsPrinterModule extends ReactContextBaseJavaModule implements
 			try{
 				initializePrinter(mmInputStream, mmOutputStream, promise);
 			}catch(Exception e){
-				promise.reject("ERRO: " + e.getMessage());
+				promise.reject("Erro: " + e.getMessage());
 				return;
 			}
 
 			// promise.resolve("BLUETOOTH CONNECTED");
 		}catch(Exception e){
-			promise.reject("ERRO: " + e.getMessage());
+			promise.reject("Erro: " + e.getMessage());
 		}
 	}
 
@@ -212,7 +235,7 @@ public class RNDatecsPrinterModule extends ReactContextBaseJavaModule implements
 			int status = mPrinter.getStatus();
 			promise.resolve(status);
 		} catch (Exception e) {
-			promise.reject("Erro ao buscar status: " + e.getMessage());
+			promise.reject("Erro: " + e.getMessage());
 		}
 	}
 
@@ -220,40 +243,38 @@ public class RNDatecsPrinterModule extends ReactContextBaseJavaModule implements
      * Feed paper to the printer (roll out blank paper)
      *
      * @param linesQuantity
+     * @param promise
      */
 	@ReactMethod
-	public void feedPaper(int linesQuantity) {
+	public void feedPaper(int linesQuantity, Promise promise) {
 		if (linesQuantity < 0 || linesQuantity > 255) {
-			if(feedPaperPromise != null) feedPaperPromise.reject("AMOUNT_LINES_0_255");
-			feedPaperPromise = null;
+			promise.reject("AMOUNT_LINES_0_255");
 			return;
 		}
 		try {
 			mPrinter.feedPaper(linesQuantity);
 			mPrinter.flush();
 
-			if(feedPaperPromise != null) feedPaperPromise.resolve("PAPER_FED");
-			feedPaperPromise = null;
+			promise.resolve("PAPER_FED");
 		} catch (Exception e) {
-			if(feedPaperPromise != null) feedPaperPromise.reject("Erro: " + e.getMessage());
-			feedPaperPromise = null;
+			promise.reject("Erro: " + e.getMessage());
 		}
 	}
 
 	/**
      * Print self test
+     *
+     * @param promise
      */
 	@ReactMethod
-	public void printSelfTest() {
+	public void printSelfTest(Promise promise) {
 		try {
 			mPrinter.printSelfTest();
 			mPrinter.flush();
 
-			if(printSelfTestPromise != null) printSelfTestPromise.resolve("SELF_TEST_PRINTED");
-			printSelfTestPromise = null;
+			promise.resolve("SELF_TEST_PRINTED");
 		} catch (Exception e) {
-			if(printSelfTestPromise != null) printSelfTestPromise.reject("Erro: " + e.getMessage());
-			printSelfTestPromise = null;
+			promise.reject("Erro: " + e.getMessage());
 		}
 	}
 
@@ -270,9 +291,9 @@ public class RNDatecsPrinterModule extends ReactContextBaseJavaModule implements
 			mPrinter.printTaggedText(text, charset);
 			mPrinter.flush();
 
-			if(promise != null) promise.resolve("PRINTED");
+			promise.resolve("PRINTED");
 		} catch (Exception e) {
-			if(promise != null) promise.reject("Erro: " + e.getMessage());
+			promise.reject("Erro: " + e.getMessage());
 		}
 	}
 
@@ -296,7 +317,7 @@ public class RNDatecsPrinterModule extends ReactContextBaseJavaModule implements
 
 			if(promise != null) promise.resolve("DISCONNECTED");
 		} catch (Exception e) {
-			if(promise != null) promise.reject("ERRO: " + e.getMessage());
+			if(promise != null) promise.reject("Erro: " + e.getMessage());
 		}
 	}
 
