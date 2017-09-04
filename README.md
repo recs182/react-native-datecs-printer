@@ -8,15 +8,15 @@ My plan is to make a full port of cordova-plugin-datecs-printer for React Native
 #### Breaking Changes [RN v0.47.2](https://github.com/facebook/react-native/releases/tag/v0.47.2)
 Remove unused createJSModules calls.
 
-- if on RN < 0.47.2 `npm i react-native-dates-printer@0.1.1`
-- if on RN > 0.47.2 `npm i react-native-dates-printer@0.1.2`
+- if on RN < 0.47.2 `npm i react-native-datecs-printer@0.1.1`
+- if on RN > 0.47.2 `npm i react-native-datecs-printer`
 
 ### Printer used for tests
 DPP 250
 
 ---
 
-## Getting started
+## Getting started (latest version)
 
 `$ npm install react-native-datecs-printer --save`
 
