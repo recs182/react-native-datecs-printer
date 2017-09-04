@@ -1,6 +1,6 @@
 {
   "name": "react-native-datecs-printer",
-  "version": "0.1.2",
+  "version": "0.1.3",
   "description": "A port of https://github.com/giorgiofellipe/cordova-plugin-datecs-printer/ for React Native.",
   "author": "Renan Cardoso Soares <renan-csoares@hotmail.com>",
   "contributors": [],
