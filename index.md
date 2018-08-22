@@ -1,5 +1,3 @@
-![ManaFlux Main Page](bluid/icon.png "Manaflux Logo")
-
 ## Key Features
 - Automatic Runes, Item Sets, and Summoner Spells downloading
 - Ability to change positions (roles, e.g MIDDLE, TOP) using the User Interface or the shortcuts
