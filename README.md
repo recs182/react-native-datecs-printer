@@ -1,6 +1,6 @@
 # react-native-datecs-printer
 
-## It only **works on Android** and has only few specific methods.
+It only **works on Android**.
 
 ## As I made this project with a very short deadline, it's specific for the app that I was working on and it might not be suitable for you, although fell free to fork and modify it.
 
