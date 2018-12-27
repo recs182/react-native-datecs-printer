@@ -1,9 +1,8 @@
 # react-native-datecs-printer
 
-It only **works on Android** and have only few specific methods.
+## It only **works on Android** and has only few specific methods.
 
-As I made this project with a very short deadline, it's specific for the app that I was working on.
-My plan is to make a full port of cordova-plugin-datecs-printer for React Native.
+## As I made this project with a very short deadline, it's specific for the app that I was working on and it might not be suitable for you, although fell free to fork and modify it.
 
 #### Breaking Changes [RN v0.47.2](https://github.com/facebook/react-native/releases/tag/v0.47.2)
 Remove unused createJSModules calls.
@@ -119,13 +118,3 @@ disconnect(){
 - `{left}`	    Aligns text to the left paper edge.
 - `{center}`	Aligns text to the center of paper.
 - `{right}`	    Aligns text to the right paper edge.
-
-### What's coming
-- [ ] Method to get and return all paired devices
-- [ ] Connect method will require pass a device to make the connection
-- [ ] Translations and dynamic messages using String values
-
-### TDB
-* Get unpaired devices method
-* Pair/Unpair device methods
-* Connect/Disconnect Bluetooth methods
